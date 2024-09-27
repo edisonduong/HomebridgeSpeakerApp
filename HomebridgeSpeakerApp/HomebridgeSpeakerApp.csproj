@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>homeflat_106039.ico</ApplicationIcon>
+    <AssemblyName>Homebridge Speakers</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="switch-off.ico" />
+    <None Remove="switch-on.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="homeflat_106039.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="switch-off.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="switch-on.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
