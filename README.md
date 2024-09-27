@@ -26,3 +26,21 @@
 1. **Download** the latest release from the [Releases](https://github.com/edisonduong/HomebridgeSpeakerApp/releases) section.
 2. **Extract** the contents of the downloaded ZIP file to a desired location.
 3. **Run** the `Homebridge Speakers.exe` file to launch the application.
+
+## Optional: Start the App Automatically on Windows Startup
+
+To ensure the Homebridge Speaker App launches automatically when you start your computer, follow these steps:
+
+1. Press `Win + R` to open the Run dialog.
+2. Type `shell:startup` and press `Enter` to open the Startup folder.
+3. Copy the `Homebridge Speakers.exe` file or a shortcut of it into the Startup folder.
+4. The application will now start automatically every time you log in to Windows.
+
+Alternatively, you can add the application to the startup apps list:
+
+1. Press `Ctrl + Shift + Esc` to open Task Manager.
+2. Go to the **Startup** tab.
+3. Click **Open File Location** next to the `Homebridge Speakers.exe` file, and move the file to the Startup folder as described above.
+4. Enable the app in the Task Manager's Startup tab if it's disabled.
+
+By following these steps, you can have the Homebridge Speaker App run automatically when Windows starts.
