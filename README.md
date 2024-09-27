@@ -23,6 +23,6 @@
 
 ## Installation
 
-1. **Download** the latest release from the [Releases](#) section.
+1. **Download** the latest release from the [Releases](https://github.com/edisonduong/HomebridgeSpeakerApp/releases) section.
 2. **Extract** the contents of the downloaded ZIP file to a desired location.
 3. **Run** the `Homebridge Speakers.exe` file to launch the application.
