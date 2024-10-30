@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -253,10 +254,37 @@ namespace HomebridgeSpeakerApp
                 var headers = new Dictionary<string, string> { { "Authorization", $"Bearer {bearerToken}" } };
                 string url = $"http://{HOME_BRIDGE_IP}:{HOME_BRIDGE_PORT}/api/accessories/{ACCESSORY_ID}";
                 string jsonData = $"{{\"characteristicType\":\"On\",\"value\":\"{toggleValue}\"}}";
-                await apiClient.PutAsync(url, jsonData, headers);
-                AppendLog($"Toggled speakers: {toggle}", Color.Chartreuse);
-                speakerStatus = toggle;
-                UpdateNotifyIcon();
+
+                // Send the request and get the full response
+                var response = await apiClient.PutAsync(url, jsonData, headers);
+
+                // Check if the response status is Unauthorized (401)
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    AppendLog("Token expired. Attempting to renew...", Color.Orange);
+                    await GetHomebridgeToken();
+
+                    // Retry the request with the new token
+                    headers["Authorization"] = $"Bearer {bearerToken}";
+                    response = await apiClient.PutAsync(url, jsonData, headers);
+
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        AppendLog("Failed to toggle speakers: Unauthorized after token renewal.", Color.Red);
+                        return;
+                    }
+                }
+
+                if (response.IsSuccessStatusCode)
+                {
+                    AppendLog($"Toggled speakers: {toggle}", Color.Chartreuse);
+                    speakerStatus = toggle;
+                    UpdateNotifyIcon();
+                }
+                else
+                {
+                    AppendLog($"Error toggling speakers: {response.ReasonPhrase}", Color.Red);
+                }
             }
             catch (Exception ex)
             {

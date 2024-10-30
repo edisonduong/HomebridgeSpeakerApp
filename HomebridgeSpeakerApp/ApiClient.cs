@@ -50,31 +50,21 @@ namespace HomebridgeSpeakerApp
         /// <param name="url">The URL to send the PUT request to.</param>
         /// <param name="jsonContent">The JSON content to send in the PUT request.</param>
         /// <returns>The response as a string.</returns>
-        public async Task<string> PutAsync(string url, string jsonContent, Dictionary<string, string> headers)
+        public async Task<HttpResponseMessage> PutAsync(string url, string jsonContent, Dictionary<string, string> headers)
         {
-            try
+            using (var request = new HttpRequestMessage(HttpMethod.Put, url))
             {
-                using (var request = new HttpRequestMessage(HttpMethod.Put, url))
+                // Set the JSON content
+                request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                // Add headers to the request
+                foreach (var header in headers)
                 {
-                    // Set the JSON content
-                    request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                    // Add headers to the request
-                    foreach (var header in headers)
-                    {
-                        request.Headers.Add(header.Key, header.Value);
-                    }
-
-                    // Send the request
-                    HttpResponseMessage response = await httpClient.SendAsync(request);
-                    response.EnsureSuccessStatusCode();
-                    // Read and return the response content
-                    return await response.Content.ReadAsStringAsync();
+                    request.Headers.Add(header.Key, header.Value);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
+
+                // Send the request and return the full response
+                return await httpClient.SendAsync(request);
             }
         }
 
