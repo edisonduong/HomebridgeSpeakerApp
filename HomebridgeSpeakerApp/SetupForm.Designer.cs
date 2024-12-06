@@ -32,13 +32,14 @@
             txtHomebridgePort = new TextBox();
             txtUsername = new TextBox();
             txtPassword = new TextBox();
-            txtAccessoryID = new TextBox();
+            cboAccessories = new ComboBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
             label4 = new Label();
-            label5 = new Label();
+            label6 = new Label();
             btnSave = new Button();
+            btnFetchAccessories = new Button();
             SuspendLayout();
             // 
             // txtHomebridgeIP
@@ -70,12 +71,13 @@
             txtPassword.Size = new Size(240, 23);
             txtPassword.TabIndex = 3;
             // 
-            // txtAccessoryID
+            // cboAccessories
             // 
-            txtAccessoryID.Location = new Point(12, 203);
-            txtAccessoryID.Name = "txtAccessoryID";
-            txtAccessoryID.Size = new Size(240, 23);
-            txtAccessoryID.TabIndex = 4;
+            cboAccessories.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboAccessories.Location = new Point(12, 247);
+            cboAccessories.Name = "cboAccessories";
+            cboAccessories.Size = new Size(240, 23);
+            cboAccessories.TabIndex = 5;
             // 
             // label1
             // 
@@ -113,18 +115,18 @@
             label4.TabIndex = 8;
             label4.Text = "Password";
             // 
-            // label5
+            // label6
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(12, 185);
-            label5.Name = "label5";
-            label5.Size = new Size(74, 15);
-            label5.TabIndex = 9;
-            label5.Text = "Accessory ID";
+            label6.AutoSize = true;
+            label6.Location = new Point(12, 229);
+            label6.Name = "label6";
+            label6.Size = new Size(116, 15);
+            label6.TabIndex = 9;
+            label6.Text = "Select an Accessory";
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(12, 246);
+            btnSave.Location = new Point(12, 286);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(240, 23);
             btnSave.TabIndex = 10;
@@ -132,18 +134,28 @@
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
             // 
+            // btnFetchAccessories
+            // 
+            btnFetchAccessories.Location = new Point(12, 195);
+            btnFetchAccessories.Name = "btnFetchAccessories";
+            btnFetchAccessories.Size = new Size(240, 23);
+            btnFetchAccessories.TabIndex = 4;
+            btnFetchAccessories.Text = "Fetch Accessories";
+            btnFetchAccessories.UseVisualStyleBackColor = true;
+            // 
             // SetupForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(264, 281);
+            ClientSize = new Size(264, 321);
+            Controls.Add(btnFetchAccessories);
+            Controls.Add(cboAccessories);
+            Controls.Add(label6);
             Controls.Add(btnSave);
-            Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(txtAccessoryID);
             Controls.Add(txtPassword);
             Controls.Add(txtUsername);
             Controls.Add(txtHomebridgePort);
@@ -160,12 +172,13 @@
         private TextBox txtHomebridgePort;
         private TextBox txtUsername;
         private TextBox txtPassword;
-        private TextBox txtAccessoryID;
+        private ComboBox cboAccessories;
         private Label label1;
         private Label label2;
         private Label label3;
         private Label label4;
-        private Label label5;
+        private Label label6;
         private Button btnSave;
+        private Button btnFetchAccessories;
     }
 }
