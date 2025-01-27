@@ -23,6 +23,8 @@ namespace HomebridgeSpeakerApp
         private DateTime expirationDate = DateTime.UtcNow;
         private string bearerToken = null;
         private bool speakerStatus = false;
+        private System.Timers.Timer autoFetchTimer;
+        private const int AutoFetchInterval = 10000;
 
         public HomeBridgeSpeakerApp()
         {
@@ -36,7 +38,34 @@ namespace HomebridgeSpeakerApp
                 Application.Exit();
             }
 
+            InitializeAutoFetchTimer();
             _ = InitializeSpeakerStatusAsync();
+        }
+
+        private void InitializeAutoFetchTimer()
+        {
+            autoFetchTimer = new System.Timers.Timer(AutoFetchInterval);
+            autoFetchTimer.Elapsed += async (sender, e) => await AutoFetchStatusAsync();
+            autoFetchTimer.AutoReset = true;
+            autoFetchTimer.Start();
+        }
+
+        private async Task AutoFetchStatusAsync()
+        {
+            try
+            {
+                if (!await IsTokenValidAsync()) return;
+
+                var response = await GetSpeakerStatusResponseAsync();
+                if (response != null)
+                {
+                    ParseSpeakerStatus(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"Error during auto-fetch: {ex.Message}", Color.Red);
+            }
         }
 
         private bool LoadOrCreateSettings()
@@ -431,15 +460,13 @@ namespace HomebridgeSpeakerApp
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (!exitApplication)
+            if (autoFetchTimer != null)
             {
-                e.Cancel = true;
-                Hide();
+                autoFetchTimer.Stop();
+                autoFetchTimer.Dispose();
             }
-            else
-            {
-                base.OnFormClosing(e);
-            }
+
+            base.OnFormClosing(e);
         }
 
         private void AppendLog(string message, Color messageColor)
