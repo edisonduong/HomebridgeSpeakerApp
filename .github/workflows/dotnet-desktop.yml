@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: your-solution-name.sln  # Replace with your actual solution name
+      Solution_Name: HomebridgeSpeakerApp.sln  # Replace with your actual solution name
 
     steps:
       - name: Checkout source code
