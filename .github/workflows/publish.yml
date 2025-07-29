@@ -1,9 +1,7 @@
 name: Build and Deploy ClickOnce
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:  # Manual trigger from GitHub UI
 
 jobs:
   build:
@@ -33,7 +31,7 @@ jobs:
             /p:UpdateEnabled=true `
             /p:UpdateUrl="https://raw.githubusercontent.com/${{ github.repository }}/clickonce/"
 
-      # 4. Upload as artifact (for testing or direct download)
+      # 4. Upload as artifact (optional)
       - name: Upload ClickOnce files as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -42,7 +40,6 @@ jobs:
 
       # 5. Deploy to 'clickonce' branch
       - name: Deploy to ClickOnce branch
-        if: github.ref == 'refs/heads/master'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
