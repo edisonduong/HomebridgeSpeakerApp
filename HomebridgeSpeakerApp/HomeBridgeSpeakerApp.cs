@@ -482,12 +482,19 @@ namespace HomebridgeSpeakerApp
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            if (!exitApplication)
+            {
+                e.Cancel = true;
+                Hide();
+                ShowInTaskbar = false;
+                Opacity = 0;
+                return;
+            }
             if (autoFetchTimer != null)
             {
                 autoFetchTimer.Stop();
                 autoFetchTimer.Dispose();
             }
-
             base.OnFormClosing(e);
         }
 
@@ -576,6 +583,13 @@ namespace HomebridgeSpeakerApp
 
             MessageBox.Show("Accessory ID has been reset. Please enter a new ID and save.",
                             "Accessory Reset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Prompt for new Accessory ID
+            if (string.IsNullOrWhiteSpace(ACCESSORY_ID))
+            {
+                MessageBox.Show("Accessory ID is not set. Please configure a new Accessory ID.", "Configuration Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowSetupFormAndSaveSettings();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
