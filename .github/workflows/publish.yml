@@ -8,22 +8,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # 1. Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Setup .NET SDK
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      # 3. Publish with ClickOnce
       - name: Publish ClickOnce
         run: |
           dotnet publish HomebridgeSpeakerApp/HomebridgeSpeakerApp.csproj `
             --configuration Release `
-            /p:PublishDir=HomebridgeSpeakerApp/HomebridgeSpeakerApp/bin/publish/ `
+            /p:PublishDir=./publish/ `
             /p:GenerateManifests=true `
             /p:IsWebBootstrapper=true `
             /p:PublishSingleFile=false `
@@ -31,21 +28,19 @@ jobs:
             /p:UpdateEnabled=true `
             /p:UpdateUrl="https://raw.githubusercontent.com/${{ github.repository }}/clickonce/"
 
-      # 4. Upload as artifact (optional)
       - name: Upload ClickOnce files as artifact
         uses: actions/upload-artifact@v4
         with:
           name: clickonce-publish
-          path: HomebridgeSpeakerApp/HomebridgeSpeakerApp/bin/publish
+          path: publish
 
-      # 5. Deploy to 'clickonce' branch
       - name: Deploy to ClickOnce branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout --orphan clickonce
           git rm -rf .
-          cp -R HomebridgeSpeakerApp/HomebridgeSpeakerApp/bin/publish/* .
+          cp -R publish/* .
           git add .
           git commit -m "Deploy ClickOnce files"
           git push --force origin clickonce
