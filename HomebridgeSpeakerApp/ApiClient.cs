@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -40,6 +41,7 @@ namespace HomebridgeSpeakerApp
             catch (Exception ex)
             {
                 // Handle or log the exception as needed
+                Debug.WriteLine($"[ERROR] GET {url}: {ex}");
                 return $"Error: {ex.Message}";
             }
         }
@@ -79,6 +81,7 @@ namespace HomebridgeSpeakerApp
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"[ERROR] GET {url}: {ex}");
                 throw new Exception(ex.Message);
             }
         }

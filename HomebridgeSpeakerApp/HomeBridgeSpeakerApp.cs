@@ -54,6 +54,12 @@ namespace HomebridgeSpeakerApp
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(ACCESSORY_ID))
+                {
+                    AppendLog("Accessory ID is not set. Skipping auto-fetch.", Color.Orange);
+                    return;
+                }
+
                 if (!await IsTokenValidAsync()) return;
 
                 var response = await GetSpeakerStatusResponseAsync();
@@ -208,25 +214,41 @@ namespace HomebridgeSpeakerApp
 
         private void ParseSpeakerStatus(string response)
         {
-            using var jsonDoc = JsonDocument.Parse(response);
-            if (jsonDoc.RootElement.TryGetProperty("serviceCharacteristics", out JsonElement serviceCharacteristics))
+            try
             {
-                foreach (var characteristic in serviceCharacteristics.EnumerateArray())
+                using var jsonDoc = JsonDocument.Parse(response);
+                if (jsonDoc.RootElement.TryGetProperty("serviceCharacteristics", out JsonElement serviceCharacteristics))
                 {
-                    if (characteristic.TryGetProperty("type", out JsonElement typeElement) &&
-                        typeElement.GetString() == "On" &&
-                        characteristic.TryGetProperty("value", out JsonElement valueElement))
+                    foreach (var characteristic in serviceCharacteristics.EnumerateArray())
                     {
-                        speakerStatus = valueElement.GetInt32() == 1;
-                        UpdateNotifyIcon();
-                        AppendLog($"Characteristic 'On' value: {valueElement.GetInt32()}", Color.LightBlue);
-                        break;
+                        if (characteristic.TryGetProperty("type", out JsonElement typeElement) &&
+                            typeElement.GetString() == "On" &&
+                            characteristic.TryGetProperty("value", out JsonElement valueElement))
+                        {
+                            speakerStatus = valueElement.GetInt32() == 1;
+                            UpdateNotifyIcon();
+                            AppendLog($"Characteristic 'On' value: {valueElement.GetInt32()}", Color.LightBlue);
+                            break;
+                        }
                     }
                 }
+                else
+                {
+                    AppendLog("serviceCharacteristics array not found in the response.", Color.Red);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                AppendLog("serviceCharacteristics array not found in the response.", Color.Red);
+                AppendLog($"Error parsing response: {ex.Message}", Color.Red);
+
+                var result = MessageBox.Show(
+                    "Failed to parse speaker status. Do you want to reset the accessory ID?",
+                    "Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+
+                if (result == DialogResult.Yes)
+                {
+                    ResetAccessoryID();
+                }
             }
         }
 
@@ -542,6 +564,18 @@ namespace HomebridgeSpeakerApp
                 MessageBox.Show("Data cleared successfully.", "Data Cleared", MessageBoxButtons.OK, MessageBoxIcon.None);
                 LoadOrCreateSettings();
             }
+        }
+
+        private void ResetAccessoryID()
+        {
+            ACCESSORY_ID = string.Empty;
+            txtAccessoryID.Text = string.Empty;
+
+            SettingsManager.SaveCredentials(HOME_BRIDGE_IP, HOME_BRIDGE_PORT, USERNAME, PASSWORD, ACCESSORY_ID);
+            AppendLog("Accessory ID has been cleared. Please reconfigure.", Color.Orange);
+
+            MessageBox.Show("Accessory ID has been reset. Please enter a new ID and save.",
+                            "Accessory Reset", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void button2_Click(object sender, EventArgs e)
